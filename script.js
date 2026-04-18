@@ -1,6 +1,33 @@
 (function () {
   'use strict';
 
+  document.querySelectorAll('[data-nav-toggle]').forEach(function (toggle) {
+    var nav = toggle.closest('.nav');
+    if (!nav) return;
+    var menu = nav.querySelector('[data-nav-menu]');
+
+    toggle.addEventListener('click', function () {
+      var isOpen = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    if (menu) {
+      menu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          nav.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      if (!nav.classList.contains('is-open')) return;
+      if (nav.contains(e.target)) return;
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
   document.querySelectorAll('[data-carousel]').forEach(function (carousel) {
     var track = carousel.querySelector('[data-track]');
     var slides = Array.from(track.children);
